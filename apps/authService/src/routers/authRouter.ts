@@ -3,9 +3,10 @@ import { body } from "express-validator";
 import { authController } from "../controllers/authController";
 
 
-const router = Router();
+const authRouter = Router();
 
-router.post(
+
+authRouter.post(
     "/register",
     body("username")
         .notEmpty().withMessage("Username is required")
@@ -16,7 +17,7 @@ router.post(
     authController.registration
 );
 
-router.post(
+authRouter.post(
     "/login",
     body("username")
         .notEmpty().withMessage("Username is required")
@@ -27,8 +28,10 @@ router.post(
     authController.login
 );
 
-router.get("/about", authController.getUser)
+authRouter.post(
+    '/refresh',
+    authController.refreshToken
+)
 
-router.post('/refresh', authController.refreshToken)
 
-export default router;
+export default authRouter;

@@ -14,7 +14,7 @@ import {
     verifyAccessToken
 } from "../utils/jwt.utils";
 import {Types} from "mongoose";
-import {getChannel} from "../../../../packages/rabbitmq/rabbitmq";
+import {getChannel} from "../shared/rabbitmq";
 
 
 class AuthService {
