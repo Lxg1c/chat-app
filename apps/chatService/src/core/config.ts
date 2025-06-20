@@ -3,7 +3,7 @@ import "dotenv/config";
 
 class DbSettings {
     url: string = "mongodb+srv://qwerty:qwerty123@cluster0.p8szdrh.mongodb.net/chats?retryWrites=true&w=majority&appName=Cluster0";
-    port = process.env.PORT ? parseInt(process.env.PORT) : 6001;
+    port = process.env.PORT ? parseInt(process.env.PORT) : 5001;
 }
 
 

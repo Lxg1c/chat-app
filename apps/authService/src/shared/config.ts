@@ -9,7 +9,7 @@ const PROJECT_ROOT = path.resolve(__dirname, '../..');
 
 class DbSettings {
     url: string = "mongodb+srv://qwerty:qwerty123@cluster0.p8szdrh.mongodb.net/users_auth?retryWrites=true&w=majority&appName=Cluster0";
-    port = process.env.PORT ? parseInt(process.env.PORT) : 5000;
+    port = process.env.PORT ? parseInt(process.env.PORT) : 5003;
 }
 
 class RabbitMQ {
@@ -44,6 +44,7 @@ class Settings {
     db: DbSettings = new DbSettings();
     rabbitmq: RabbitMQ = new RabbitMQ();
     auth_jwt: AuthJWT = new AuthJWT();
+    port: number = 5001;
 }
 
 export const settings = new Settings();

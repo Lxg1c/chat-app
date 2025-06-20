@@ -1,5 +1,5 @@
 import jwt, {JwtPayload, SignOptions} from "jsonwebtoken";
-import {settings} from "../core/config";
+import {settings} from "../shared/config";
 
 interface AccessPayload extends JwtPayload {
     id: string;
