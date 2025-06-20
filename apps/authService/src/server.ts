@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import app from "./app";
-import { settings } from "./core/config";
-import {connectRabbitMQ} from "../../../packages/rabbitmq/rabbitmq";
+import { settings } from "./shared/config";
+import {connectRabbitMQ} from "./shared/rabbitmq";
 
 
 const start = async () => {
@@ -9,11 +9,11 @@ const start = async () => {
         await mongoose.connect(settings.db.url);
         await connectRabbitMQ()
 
-        app.listen(settings.db.port, () => {
-            console.log(`🚀 Server listening on port ${settings.db.port}`);
+        app.listen(settings.port, () => {
+            console.log(`🚀 Сервер слушает порт: ${settings.port}`);
         });
     } catch (error) {
-        console.error(`❌ Failed to start server: ${error}`);
+        console.error(`❌ Ошибка при запуске сервера: ${error}`);
     }
 };
 

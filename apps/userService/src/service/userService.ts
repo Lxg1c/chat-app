@@ -13,7 +13,7 @@ class UserService {
     }
 
     async getUsers() {
-        return ProfileModel.find().populate("roles", "value");
+        return ProfileModel.find()
     }
 
     async getUserRoles(id: string) {

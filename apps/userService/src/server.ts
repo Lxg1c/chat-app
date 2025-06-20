@@ -9,8 +9,8 @@ const start = async () => {
         await mongoose.connect(settings.db.url);
         await startConsumer()
 
-        app.listen(settings.db.port, () => {
-            console.log(`🚀 Сервер слушает порт: ${settings.db.port}`);
+        app.listen(settings.port, () => {
+            console.log(`🚀 Сервер слушает порт: ${settings.port}`);
         });
     } catch (error) {
         console.error(`❌ Ошибка запуска сервера: ${error}`);
