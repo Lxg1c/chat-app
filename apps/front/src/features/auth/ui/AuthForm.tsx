@@ -1,17 +1,20 @@
 "use client";
 
-import { useState } from "react";
+import {FormEvent, useState} from "react";
 import { login } from "../model/login";
+import {useUserStore} from "@/entities/user/model/store";
 
 export const AuthForm = () => {
     const [username, setUsername] = useState("admin");
     const [password, setPassword] = useState("adminpassword");
+    const setTokens = useUserStore(state => state.setTokens);
 
-    const handleSubmit = async (e: React.FormEvent) => {
+    const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
         const success = await login(username, password);
         if (success) {
-            alert("✅ Login successful");
+            console.log(success);
+            setTokens(success.accessToken, success.refreshToken);
         } else {
             alert("❌ Login failed");
         }

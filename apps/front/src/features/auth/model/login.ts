@@ -11,7 +11,7 @@ export const login = async (username: string, password: string) => {
         const { accessToken, refreshToken } = response.data;
 
         useUserStore.getState().setTokens(accessToken, refreshToken);
-        return true;
+        return { accessToken, refreshToken };
     } catch (error) {
         console.error("❌ Login error:", error);
         return false;

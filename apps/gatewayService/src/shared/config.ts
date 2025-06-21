@@ -1,17 +1,10 @@
 import "dotenv/config";
 import * as path from "path";
-import * as process from "node:process";
 import * as fs from "node:fs";
 
 
 // Получаем корневую директорию проекта
 const PROJECT_ROOT = path.resolve(__dirname, '../..');
-
-
-class RabbitMQ {
-    url: string = "amqp://localhost"
-    port = process.env.PORT ? parseInt(process.env.PORT) : 5672;
-}
 
 
 class AuthJWT {
@@ -31,9 +24,8 @@ class AuthJWT {
 
 
 class Settings {
-    api_v1_prefix: string = '/api/v1';
-    port: number = 3001;
-    rabbitmq: RabbitMQ = new RabbitMQ();
+    api_v1_prefix: string = '/gateway';
+    port: number = 5000;
     authJWT = new AuthJWT();
 }
 

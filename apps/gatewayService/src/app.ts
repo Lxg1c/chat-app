@@ -1,20 +1,16 @@
-import cors from "cors";
 import express from "express";
-import authProxy from "./proxy/authProxy";
+import {createProxyMiddleware} from "http-proxy-middleware";
+import {settings} from "./shared/config";
+
 
 const app = express();
 
-
-// http routes
-app.use(cors({
-    origin: "http://localhost:3000",
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"]
+app.use(`${settings.api_v1_prefix}/login`, createProxyMiddleware({
+    target: "http://localhost:5001/api/v1/auth/login",
+    changeOrigin: true,
 }));
 
 app.use(express.json());
-app.use(authProxy)
 
 
 export default app

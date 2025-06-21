@@ -2,41 +2,91 @@ import { Socket } from "socket.io";
 import jwt from "jsonwebtoken";
 import { settings } from "../shared/config";
 import { io as ClientIO } from "socket.io-client";
+import { JwtPayload } from "jsonwebtoken";
+
+interface IPayload extends JwtPayload {
+    id: string;
+}
 
 export const handleSocketConnection = (clientSocket: Socket) => {
-    const tokenRaw = clientSocket.handshake.query.token;
-    const token = Array.isArray(tokenRaw) ? tokenRaw[0] : tokenRaw;
-
-    if (!token) return clientSocket.disconnect();
-
     try {
-        const payload = jwt.verify(token, settings.authJWT.publicKey);
-        const userId = typeof payload === "object" && "sub" in payload ? payload.sub : null;
+        const tokenRaw = clientSocket.handshake.query.token;
+        const token = Array.isArray(tokenRaw) ? tokenRaw[0] : tokenRaw;
 
-        if (!userId) return clientSocket.disconnect();
+        if (!token) {
+            console.log("❌ Токен не предоставлен");
+            return clientSocket.disconnect();
+        }
+
+        let payload: IPayload;
+        try {
+            const verified = jwt.verify(token, settings.authJWT.publicKey);
+
+            // Проверяем тип результата
+            if (typeof verified === 'string') {
+                return new Error("Token payload is string, expected object");
+            }
+
+            payload = verified as IPayload;
+
+            if (!payload.id) {
+                return new Error("Token payload missing required 'id' field");
+            }
+        } catch (e) {
+            const error = e instanceof Error ? e : new Error("Unknown token verification error");
+            console.log(`❌ Ошибка верификации токена: ${error.message}`);
+            return clientSocket.disconnect();
+        }
+
+        console.log("✅ Успешная верификация токена, payload:", payload);
+        const userId = payload.id;
 
         const backendSocket = ClientIO("http://localhost:5004", {
             query: { user: userId },
         });
 
-        clientSocket.on("join", (chatId) => {
-            backendSocket.emit("join", chatId);
-        });
-
-        clientSocket.on("message", (data) => {
+        // Обработчики событий
+        const messageHandler = (data: any) => {
             backendSocket.emit("message", data);
-        });
+        };
 
-        backendSocket.on("message", (msg) => {
+        const joinHandler = (chatId: string) => {
+            backendSocket.emit("join", chatId);
+        };
+
+        const backendMessageHandler = (msg: any) => {
             clientSocket.emit("message", msg);
-        });
+        };
 
-        clientSocket.on("disconnect", () => {
+        const disconnectHandler = () => {
             backendSocket.disconnect();
+            cleanup();
+        };
+
+        // Функция очистки
+        const cleanup = () => {
+            clientSocket.off("message", messageHandler);
+            clientSocket.off("join", joinHandler);
+            clientSocket.off("disconnect", disconnectHandler);
+            backendSocket.off("message", backendMessageHandler);
+        };
+
+        // Подписываемся на события
+        clientSocket.on("message", messageHandler);
+        clientSocket.on("join", joinHandler);
+        clientSocket.on("disconnect", disconnectHandler);
+        backendSocket.on("message", backendMessageHandler);
+
+        // Очистка при ошибках
+        backendSocket.on("connect_error", (err) => {
+            console.log(`❌ Ошибка подключения к бэкенду: ${err.message}`);
+            cleanup();
+            clientSocket.disconnect();
         });
 
-    } catch (e) {
-        if (e instanceof Error) console.log("❌ Неверный токен:", e.message);
+    } catch (error) {
+        const err = error instanceof Error ? error : new Error("Unknown socket connection error");
+        console.log(`❌ Критическая ошибка обработки подключения: ${err.message}`);
         clientSocket.disconnect();
     }
 };
