@@ -20,6 +20,11 @@ app.use(`${settings.api_v1_prefix}/refresh`, createProxyMiddleware({
     changeOrigin: true,
 }));
 
+app.use(`${settings.api_v1_prefix}/about`, createProxyMiddleware({
+    target: "http://localhost:5002/api/v1/user/users",
+    changeOrigin: true,
+}))
+
 app.use(express.json());
 
 
