@@ -44,7 +44,15 @@ export class AuthController {
 
             const {username, password} = req.body;
             const result = await authService.login(username, password);
-            res.json(result);
+            res
+                .cookie('refreshToken', result.refreshToken, {
+                httpOnly: true,
+                secure: true,
+                sameSite: "strict",
+                path: "api/v1/auth/login",
+                maxAge: 30 * 24 * 60 * 60 * 1000,
+            })
+                .json({accessToken: result.accessToken});
         } catch (e) {
             console.error(e);
             res.status(403).json({ message: "Ошибка авторизации" });
@@ -58,9 +66,9 @@ export class AuthController {
                 res.status(400).json({ message: "Невалидный refresh-token", errors });
             }
 
-            const { refreshToken } = req.body
+            const { refreshToken } = req.cookies.refreshToken;
             const result = await authService.refreshToken(refreshToken);
-            res.json(result);
+            res.json({ accessToken: result.accessToken });
         } catch (e) {
             console.error(e);
             res.status(403).json({ message: "Ошибка обновленния токена" });
