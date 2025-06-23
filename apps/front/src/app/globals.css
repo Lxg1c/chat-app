@@ -4,11 +4,24 @@ html,
 body {
   max-width: 100vw;
   overflow-x: hidden;
-  /*background: #292a2e;*/
+  font-family: var(--font-plus-jakarta);
 }
 
 .container {
   max-width: 1200px;
   padding: 0 1rem;
   margin: 0 auto;
+}
+
+@theme {
+  --primary-1: #128C7E;
+  --primary-2: #D1E4E8;
+  --primary-3: #EFFAFD;
+
+  --dark-1: #09132C;
+  --dark-2: #2F3A5F;
+  --dark-3: #5A6A9D;
+  --dark-4: #9393C1;
+
+  --light-1: #FFFFFF;
 }

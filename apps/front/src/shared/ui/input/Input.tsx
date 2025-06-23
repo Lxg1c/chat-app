@@ -1,6 +1,6 @@
 interface Input {
     placeholder: string;
-    className: string;
+    className?: string;
 }
 
 const Input = (
@@ -11,7 +11,7 @@ const Input = (
 ) => {
     return (
         <input
-            className={`input w-full px-5 py-2 border-2 border-teal-500 text-white rounded-full ${className}`}
+            className={`bg-white rounded-full w-full font-normal text-[14px] px-6 py-3 ${className}`}
             placeholder={placeholder}
         />
     )
