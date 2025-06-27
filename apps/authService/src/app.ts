@@ -11,14 +11,13 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 app.use(cookieParser());
-
+app.use(morgan(":method :url :status :res[content-length] - :response-time ms", {
+    stream: {
+        write: (message) => logger.http(message.trim()),
+    },
+}));
 
 app.use(`${settings.api_v1_prefix}/auth`, authRouter);
 
-app.use(morgan("combined", {
-    stream: {
-        write: (message: string) => logger.info(message.trim()),
-    }
-}));
 
 export default app;
