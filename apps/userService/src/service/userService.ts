@@ -12,14 +12,6 @@ class UserService {
         return ProfileModel.create({_id, username, phone })
     }
 
-    async getUsers() {
-        return ProfileModel.find()
-    }
-
-    async getUserRoles(id: string) {
-        return ProfileModel.findById(id).populate("roles", "value");
-    }
-
     async getUserById(id: string) {
         return ProfileModel.findById(id);
     }

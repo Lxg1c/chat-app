@@ -9,6 +9,7 @@ import { Request, Response } from "express";
 import {authService} from "../services/authService";
 import {validationResult} from "express-validator";
 import {Types} from "mongoose";
+import {verifyRefreshToken} from "../utils/jwt.utils";
 
 
 export class AuthController {
@@ -75,15 +76,32 @@ export class AuthController {
         }
     }
 
-    async getUser(req: Request, res: Response): Promise<void> {
+    async logout(req: Request, res: Response): Promise<void> {
         try {
-            const { accessToken } = req.body;
+            const refreshToken = req.cookies.refreshToken;
 
-            const result = await authService.getUser(accessToken)
-            res.json(result);
+            if (!refreshToken) {
+                res.status(400).json({ message: 'Refresh token not found in cookies' });
+                return
+            }
+
+            const payload = verifyRefreshToken(refreshToken);
+            if (!payload) {
+                res.status(401).json({ message: 'Invalid refresh token' });
+                return
+            }
+
+            // Очистить cookie на клиенте
+            res.clearCookie('refreshToken', {
+                httpOnly: true,
+                secure: true,
+                sameSite: 'strict',
+            });
+
+            res.status(200).json({ message: 'Logged out successfully' });
         } catch (e) {
             console.error(e);
-            res.status(403).json({ message: "Возникла ошибка при поиске пользователя" });
+            res.status(500).json({ message: "Ошибка сервера" });
         }
     }
 }

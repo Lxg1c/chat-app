@@ -33,5 +33,10 @@ authRouter.post(
     authController.refreshToken
 )
 
+authRouter.post(
+    "/logout",
+    authController.logout
+)
+
 
 export default authRouter;

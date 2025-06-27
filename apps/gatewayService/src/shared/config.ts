@@ -1,9 +1,8 @@
-import "dotenv/config";
+import "dotenv";
 import * as path from "path";
-import * as fs from "node:fs";
+import * as fs from "fs";
 
 
-// Получаем корневую директорию проекта
 const PROJECT_ROOT = path.resolve(__dirname, '../..');
 
 

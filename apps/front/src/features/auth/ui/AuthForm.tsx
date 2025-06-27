@@ -18,7 +18,7 @@ const AuthForm: React.FC<AuthFormProps> = ({ type, setFormType }) => {
     const isSignup = type === 'signup';
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
-    const setTokens = useUserStore(state => state.setTokens);
+    const setTokens = useUserStore(state => state.setAccessTokens);
     const router = useRouter();
 
     const formik = useFormik<FormValues>({
@@ -41,7 +41,7 @@ const AuthForm: React.FC<AuthFormProps> = ({ type, setFormType }) => {
                     : await handleSignin(values);
 
                 if (!isSignup) {
-                    setTokens(data.accessToken, data.refreshToken);
+                    setTokens(data.accessToken);
                     router.push('/');
                 } else {
                     console.log('Auth success:', data);

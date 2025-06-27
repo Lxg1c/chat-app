@@ -93,11 +93,6 @@ class AuthService {
 
         return { accessToken: newAccessToken };
     }
-
-    async getUser(accessToken: string) {
-        const decoded = verifyAccessToken(accessToken);
-        return UserModel.findById(decoded.id).select("_id, username");
-    }
 }
 
 export const authService = new AuthService();

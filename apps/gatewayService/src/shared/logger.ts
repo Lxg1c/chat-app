@@ -8,10 +8,10 @@ const logFormat = printf(({ level, message, timestamp, stack }) => {
 });
 
 export const logger = createLogger({
-    level: "debug", // логировать всё начиная с debug
+    level: "debug",
     format: combine(
         timestamp({ format: "YYYY-MM-DD HH:mm:ss" }),
-        errors({ stack: true }), // логировать stack trace, если есть ошибка
+        errors({ stack: true }),
         logFormat
     ),
     transports: [

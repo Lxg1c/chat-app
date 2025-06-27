@@ -2,16 +2,25 @@
 import { create } from 'zustand';
 
 interface UserState {
+    username: string | null;
+    phone: string | null;
     accessToken: string | null;
     isLoading: boolean;
-    setTokens: (access: string, refresh: string) => void;
+    setUserInfo: (username: string, phone: string) => void;
+    setAccessTokens: (access: string) => void;
     checkAuth: () => void;
+    clearUser: () => void;
 }
 
 export const useUserStore = create<UserState>((set) => ({
+    username: null,
+    phone: null,
     accessToken: null,
     isLoading: true,
-    setTokens: (access) => {
+    setUserInfo: (username, phone) => {
+        set({username: username, phone: phone})
+    },
+    setAccessTokens: (access) => {
         localStorage.setItem('accessToken', access);
         set({ accessToken: access });
     },
@@ -23,4 +32,8 @@ export const useUserStore = create<UserState>((set) => ({
             isLoading: false,
         });
     },
+    clearUser: () => {
+        localStorage.removeItem('accessToken');
+        set({ username: null, phone: null, accessToken: null, isLoading: false });
+    }
 }));
